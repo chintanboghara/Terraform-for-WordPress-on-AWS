@@ -1,6 +1,9 @@
+
 # Terraform for WordPress on AWS
 
-### Directory Structure
+This Terraform project automates the deployment of the infrastructure required to host a WordPress application on AWS. It sets up a modular and scalable environment including networking, an EKS (Elastic Kubernetes Service) cluster, and necessary IAM roles. The project supports multiple environments: development, staging, and production.
+
+## Directory Structure
 
 ```
 Terraform-for-WordPress-on-AWS/
@@ -40,38 +43,53 @@ Terraform-for-WordPress-on-AWS/
 └── README.md
 ```
 
-- **modules/**: Contains reusable Terraform modules for infrastructure components.
-- **environments/**: Contains environment-specific configurations (dev, staging, prod).
-- **Root-level files**: `.gitignore` for version control exclusions and `README.md` for documentation.
+- **modules/**: Reusable Terraform modules:
+  - **networking**: Configures VPC, subnets, security groups, etc.
+  - **eks**: Provisions an EKS cluster for hosting WordPress.
+  - **iam**: Defines IAM roles and policies.
+- **environments/**: Environment-specific configurations:
+  - **dev**: Development environment.
+  - **staging**: Staging environment.
+  - **prod**: Production environment.
 
-This Terraform project manages the infrastructure for a WordPress production environment using a modular and scalable structure.
+Each environment includes:
+  - `main.tf`: Main configuration.
+  - `variables.tf`: Environment-specific variables.
+  - `backend.tf`: Backend configuration for state management.
+  - `terraform.tfvars` (optional): Variable values.
+  - `outputs.tf` (optional): Output definitions.
+
+## Configuration
+
+1. Navigate to the desired environment directory (e.g., `environments/dev/`).
+2. (Optional) Edit `terraform.tfvars` to set environment-specific variables.
+3. Ensure `backend.tf` is configured correctly for state management.
 
 ## Usage
 
-1. Navigate to an environment directory (e.g., `environments/dev/`).
-2. Initialize Terraform:
+1. Initialize Terraform:
    ```bash
    terraform init
    ```
-3. Plan the infrastructure:
+2. Plan the infrastructure:
    ```bash
    terraform plan
    ```
-4. Apply the changes:
+   Review the plan carefully.
+3. Apply the changes:
    ```bash
    terraform apply
    ```
+4. Check the outputs for important information (e.g., EKS cluster endpoint).
 
-## Modules
+## Backend Configuration
 
-- **networking**: Configures VPC, subnets, and related resources.
-- **eks**: Sets up an EKS cluster for WordPress.
-- **iam**: Defines IAM roles and policies.
+Each environment uses an S3 backend for state management, as defined in `backend.tf`. Ensure the specified S3 bucket exists and is accessible.
 
-## Environments
+## Cleanup
 
-- **dev**: Development environment.
-- **staging**: Staging environment.
-- **prod**: Production environment.
-
-Each environment contains `main.tf`, `variables.tf`, `backend.tf`, and optionally `terraform.tfvars` and `outputs.tf`.
+To remove the infrastructure:
+```bash
+terraform destroy
+```
+**Caution**: This deletes all created resources.
